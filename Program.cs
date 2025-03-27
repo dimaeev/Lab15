@@ -46,6 +46,42 @@ class SquareMatrix
   }
 }
 
+  public static SquareMatrix operator +(SquareMatrix a, SquareMatrix b)
+  {
+    if (a.Size != b.Size)
+      throw new ArgumentException("Матрица должны быть одинакового размера ");
+
+    int size = a.Size;
+    int[,] result = new int[size, size];
+
+    for (int i = 0; i < size; i++)
+      for (int j = 0;j < size; j++)
+        result[i, j] = a.matrix[i, j] + b.matrix[i, j];
+
+    return new SquareMatrix(result);
+  }
+
+  public static SquareMatrix operator *(SquareMatrix a, SquareMatrix b)
+  {
+    if (a.Size != b.Size)
+      throw new ArgumentException("Матрицы должны быть одинакового размера");
+
+    int size = a.Size;
+    int[,] result = new int[size,size];
+
+    for (int i = 0;i < size;i++)
+      for (int j = 0; j < size;j++)
+      {
+        result[i, j] = 0;
+        for (int k = 0; k < size; k++)
+          result[i, j] += a.matrix[i, k] * b.matrix[k, j];
+      }
+
+    return new SquareMatrix(result);
+  }
+
+
+
 class Program
 {
   static void Main()
