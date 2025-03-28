@@ -87,26 +87,27 @@ class SquareMatrix
 
   public static bool operator >(SquareMatrix a, SquareMatrix b)
   {
+    if (a == null || b == null)
+      throw new ArgumentNullException("Матрицы не могут быть null");
+
     return a.Determinant() > b.Determinant();
   }
 
   public static bool operator <(SquareMatrix a, SquareMatrix b)
   {
+    if (a == null || b == null)
+      throw new ArgumentNullException("Матрицы не могут быть null");
+
     return a.Determinant() < b.Determinant();
-  }
-
-  public static bool operator >=(SquareMatrix a, SquareMatrix b)
-  {
-    return a.Determinant() >= b.Determinant();
-  }
-
-  public static bool operator <=(SquareMatrix a, SquareMatrix b)
-  {
-    return a.Determinant() <= b.Determinant();
   }
 
   public static bool operator ==(SquareMatrix a, SquareMatrix b)
   {
+    if (a == null && b == null)
+      return true;
+    if (a == null || b == null)
+      return false;
+
     return a.Determinant() == b.Determinant();
   }
 
@@ -165,6 +166,18 @@ class SquareMatrix
     }
 
     return new SquareMatrix(inverse);
+  }
+
+  public SquareMatrix Clone()
+  {
+    int size = this.Size;
+    int[,] copyMatrix = new int[size, size];
+
+    for (int i = 0; i < size; i++)
+      for (int j = 0; j < size; j++)
+        copyMatrix[i, j] = this.matrix[i, j];
+
+    return new SquareMatrix(copyMatrix);
   }
 
   class Program
