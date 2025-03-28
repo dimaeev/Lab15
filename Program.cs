@@ -8,6 +8,7 @@ class SquareMatrix
 {
   private int[,] matrix;
   public int Size { get; set; }
+  public double[,] Inverse1 { get; }
 
   public SquareMatrix(int size)
   {
@@ -31,6 +32,11 @@ class SquareMatrix
 
     Size = size;
     matrix = (int[,])values.Clone();
+  }
+
+  public SquareMatrix(double[,] inverse)
+  {
+    Inverse1 = inverse;
   }
 
   public override string ToString()
@@ -79,6 +85,36 @@ class SquareMatrix
     return new SquareMatrix(result);
   }
 
+  public static bool operator >(SquareMatrix a, SquareMatrix b)
+  {
+    return a.Determinant() > b.Determinant();
+  }
+
+  public static bool operator <(SquareMatrix a, SquareMatrix b)
+  {
+    return a.Determinant() < b.Determinant();
+  }
+
+  public static bool operator >=(SquareMatrix a, SquareMatrix b)
+  {
+    return a.Determinant() >= b.Determinant();
+  }
+
+  public static bool operator <=(SquareMatrix a, SquareMatrix b)
+  {
+    return a.Determinant() <= b.Determinant();
+  }
+
+  public static bool operator ==(SquareMatrix a, SquareMatrix b)
+  {
+    return a.Determinant() == b.Determinant();
+  }
+
+  public static bool operator !=(SquareMatrix a, SquareMatrix b)
+  {
+    return !(a == b);
+  }
+
   public int Determinant()
   {
     if (Size == 1) return matrix[0, 0];
@@ -110,41 +146,32 @@ class SquareMatrix
     return new SquareMatrix(minor);
   }
 
-  public static bool operator >(SquareMatrix a, SquareMatrix b)
+  public SquareMatrix Inverse()
   {
-    return a.Determinant() > b.Determinant();
+    int det = Determinant();
+    if (det == 0)
+      throw new InvalidOperationException("Обратная матрица не существует (det = 0)");
+
+    int size = Size;
+    double[,] inverse = new double[size, size];
+
+    for (int i = 0; i < size; i++)
+    {
+      for (int j = 0; j < size; j++)
+      {
+        int minorDet = Minor(i, j).Determinant();
+        inverse[j, i] = ((i + j) % 2 == 0 ? 1 : -1) * minorDet / (double)det;
+      }
+    }
+
+    return new SquareMatrix(inverse);
   }
 
-  public static bool operator <(SquareMatrix a, SquareMatrix b)
-  {
-    return a.Determinant() < b.Determinant();
-  }
-
-  public static bool operator >=(SquareMatrix a, SquareMatrix b)
-  {
-    return a.Determinant() >= b.Determinant();
-  }
-
-  public static bool operator <=(SquareMatrix a, SquareMatrix b)
-  {
-    return a.Determinant() <= b.Determinant();
-  }
-
-  public static bool operator ==(SquareMatrix a, SquareMatrix b)
-  {
-    return a.Determinant() == b.Determinant();
-  }
-
-  public static bool operator !=(SquareMatrix a, SquareMatrix b)
-  {
-    return !(a == b);
-  }
-
-
-class Program
+  class Program
 {
   static void Main()
   {
 
   }
+}
 }
