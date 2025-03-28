@@ -44,7 +44,6 @@ class SquareMatrix
     }
     return result;
   }
-}
 
   public static SquareMatrix operator +(SquareMatrix a, SquareMatrix b)
   {
@@ -80,6 +79,66 @@ class SquareMatrix
     return new SquareMatrix(result);
   }
 
+  public int Determinant()
+  {
+    if (Size == 1) return matrix[0, 0];
+    if (Size == 2)
+      return matrix[0, 0] * matrix[1, 1] - matrix[0, 1] * matrix[1, 0];
+
+    int det = 0;
+    for (int j = 0; j < Size; j++)
+    {
+      det += (j % 2 == 0 ? 1 : -1) * matrix[0, j] * Minor(0, j).Determinant();
+    }
+    return det;
+  }
+
+  private SquareMatrix Minor(int row, int col)
+  {
+    int[,] minor = new int[Size - 1, Size - 1];
+    for (int i = 0, mi = 0; i < Size; i++)
+    {
+      if (i == row) continue;
+      for (int j = 0, mj = 0; j < Size; j++)
+      {
+        if (j == col) continue;
+        minor[mi, mj] = matrix[i, j];
+        mj++;
+      }
+      mi++;
+    }
+    return new SquareMatrix(minor);
+  }
+
+  public static bool operator >(SquareMatrix a, SquareMatrix b)
+  {
+    return a.Determinant() > b.Determinant();
+  }
+
+  public static bool operator <(SquareMatrix a, SquareMatrix b)
+  {
+    return a.Determinant() < b.Determinant();
+  }
+
+  public static bool operator >=(SquareMatrix a, SquareMatrix b)
+  {
+    return a.Determinant() >= b.Determinant();
+  }
+
+  public static bool operator <=(SquareMatrix a, SquareMatrix b)
+  {
+    return a.Determinant() <= b.Determinant();
+  }
+
+  public static bool operator ==(SquareMatrix a, SquareMatrix b)
+  {
+    return a.Determinant() == b.Determinant();
+  }
+
+  public static bool operator !=(SquareMatrix a, SquareMatrix b)
+  {
+    return !(a == b);
+  }
 
 
 class Program
